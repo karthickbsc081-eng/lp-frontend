@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Loss Prevention System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body style="font-family:Arial;padding:20px">
+
+<h2>Loss Prevention Login</h2>
+
+<input id="user" placeholder="Username"><br><br>
+<input id="pass" type="password" placeholder="Password"><br><br>
+<button onclick="login()">Login</button>
+
+<hr>
+
+<button onclick="sendEmergency()" style="background:red;color:white;padding:10px">
+🚨 EMERGENCY ALERT
+</button>
+
+<script>
+const BACKEND = "https://lp-backend-l03d.onrender.com";
+
+async function login() {
+  const r = await fetch(BACKEND + "/login", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      username: user.value,
+      password: pass.value
+    })
+  });
+
+  const data = await r.json();
+  localStorage.setItem("token", data.token);
+  alert("Login successful");
+}
+
+async function sendEmergency() {
+  await fetch(BACKEND + "/emergency", {
+    method: "POST",
+    headers: {
+      "Content-Type":"application/json",
+      "Authorization": localStorage.getItem("token")
+    },
+    body: JSON.stringify({
+      category: "Fire",
+      severity: "Critical",
+      location: "Kitchen"
+    })
+  });
+  alert("Emergency sent & logged");
+}
+</script>
+
+</body>
+</html>
