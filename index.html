@@ -4,6 +4,7 @@
   <title>Loss Prevention System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
+
 <body style="font-family:Arial;padding:20px">
 
 <h2>Loss Prevention Login</h2>
@@ -11,6 +12,21 @@
 <input id="user" placeholder="Username"><br><br>
 <input id="pass" type="password" placeholder="Password"><br><br>
 <button onclick="login()">Login</button>
+
+<hr>
+
+<h3>Daily Report</h3>
+
+<input id="occ" placeholder="Hotel Occupancy %"><br><br>
+<input id="vip" placeholder="VIP Arrivals"><br><br>
+
+<textarea id="gi" placeholder="Guest Incident (details)"></textarea><br><br>
+<textarea id="si" placeholder="Staff Incident (details)"></textarea><br><br>
+<textarea id="gc" placeholder="Guest Complaints"></textarea><br><br>
+<textarea id="ig" placeholder="Guest Injury"></textarea><br><br>
+<textarea id="is" placeholder="Staff Injury"></textarea><br><br>
+
+<button onclick="submitReport()">Submit Daily Report</button>
 
 <hr>
 
@@ -36,6 +52,26 @@ async function login() {
   alert("Login successful");
 }
 
+async function submitReport() {
+  await fetch(BACKEND + "/daily-report", {
+    method: "POST",
+    headers: {
+      "Content-Type":"application/json",
+      "Authorization": localStorage.getItem("token")
+    },
+    body: JSON.stringify({
+      occupancy: occ.value,
+      vipArrivals: vip.value,
+      guestIncident: gi.value,
+      staffIncident: si.value,
+      guestComplaint: gc.value,
+      guestInjury: ig.value,
+      staffInjury: is.value
+    })
+  });
+  alert("Daily report submitted");
+}
+
 async function sendEmergency() {
   await fetch(BACKEND + "/emergency", {
     method: "POST",
@@ -49,7 +85,7 @@ async function sendEmergency() {
       location: "Kitchen"
     })
   });
-  alert("Emergency sent & logged");
+  alert("Emergency sent");
 }
 </script>
 
